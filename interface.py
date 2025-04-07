@@ -1,4 +1,9 @@
 
+CYBER_BG = "#0f0f1c"
+CYBER_ACCENT = "#00ffff"
+CYBER_TEXT = "#f5f5f5"
+
+
 import tkinter as tk
 from tkinter import ttk, filedialog
 import customtkinter as ctk
@@ -9,16 +14,17 @@ import random
 import threading
 import time
 import csv
-from sorting import HeapSort, CombSort, QuickSort, MergeSort
+from sorting import HeapSort, CombSort, QuickSort, MergeSort, SelectionSort, BubbleSort, InsertionSort
 
 class SortCompetitionFrame(ctk.CTkToplevel):
     def __init__(self, master, algorithms):
         super().__init__(master)
         self.title("Compétition de Tri")
+        self.configure(bg=CYBER_BG)
         self.geometry("800x600")
         self.algorithms = algorithms
 
-        ctk.CTkLabel(self, text="Compétition de Tri", font=("Arial", 20, "bold")).pack(pady=10)
+        ctk.CTkLabel(self, text="Compétition de Tri", font=("Consolas", 22, "bold")).pack(pady=10)
 
         self.slider = ctk.CTkSlider(self, from_=1000, to=100000, number_of_steps=100, command=self._update_slider_label)
         self.slider.set(5000)
@@ -74,7 +80,7 @@ class SortCompetitionFrame(ctk.CTkToplevel):
         names = [r[0] for r in results]
         times = [r[1] for r in results]
         self.ax.clear()
-        sns.barplot(x=times, y=names, ax=self.ax, palette="pastel")
+        sns.barplot(x=times, y=names, ax=self.ax, palette="cool")
         self.ax.set_xlabel("Temps (s)")
         self.ax.set_ylabel("Algorithme")
         self.ax.set_title("Temps d'exécution par algorithme")
@@ -102,20 +108,26 @@ class SortingAppWithSeaborn:
         self.root = root
         self.root.title("Tri Dynamique avec Seaborn")
         self.root.geometry("1000x700")
-        self.root.configure(bg="#F5F5F5")
-        ctk.set_appearance_mode("light")
+        self.root.configure(bg=CYBER_BG)
+        ctk.set_appearance_mode("dark")
 
         self.algorithms = {
             "Tri par tas": HeapSort(),
+            "Tri par sélection": SelectionSort(),
+            "Tri à bulle": BubbleSort(),
+            "Tri par insertion": InsertionSort(),
             "Tri à peigne": CombSort(),
             "Tri rapide": QuickSort(),
-            "Tri fusion": MergeSort()
+            "Tri fusion": MergeSort(),
+            "Tri par sélection": SelectionSort(),
+            "Tri à bulle": BubbleSort(),
+            "Tri par insertion": InsertionSort()
         }
 
         self._setup_ui()
 
     def _setup_ui(self):
-        self.title_label = ctk.CTkLabel(self.root, text="Visualisation Dynamique de Tri", font=("Arial", 24, "bold"))
+        self.title_label = ctk.CTkLabel(self.root, text="Visualisation Dynamique de Tri", font=("Consolas", 26, "bold"))
         self.title_label.pack(pady=10)
 
         self.slider = ctk.CTkSlider(self.root, from_=10, to=300, number_of_steps=290, command=self._update_slider_label)
@@ -142,6 +154,13 @@ class SortingAppWithSeaborn:
         self.canvas_widget = self.canvas.get_tk_widget()
         self.canvas_widget.pack(fill="both", expand=True)
 
+        self.before_label = ctk.CTkLabel(self.root, text="Avant tri : []", text_color=CYBER_TEXT)
+        self.before_label.pack(pady=5)
+
+        self.after_label = ctk.CTkLabel(self.root, text="Après tri : []", text_color=CYBER_TEXT)
+        self.after_label.pack(pady=5)
+
+
     def _update_slider_label(self, val):
         self.slider_label.configure(text=f"Taille de la liste : {int(float(val))}")
 
@@ -153,12 +172,14 @@ class SortingAppWithSeaborn:
         data = [random.randint(1, 100) for _ in range(n)]
         algo_name = self.algo_choice.get()
         algorithm = self.algorithms[algo_name]
+        self.before_label.configure(text="Avant tri : " + str(data))
         self._animate_sort(data, algorithm)
+        self.after_label.configure(text="Après tri : " + str(data))
 
     def _animate_sort(self, data, algorithm):
         def update_plot(data, color="skyblue"):
             self.ax.clear()
-            sns.barplot(x=list(range(len(data))), y=data, ax=self.ax, palette=[color]*len(data))
+            sns.barplot(x=list(range(len(data))), y=data, ax=self.ax, palette="coolwarm")
             self.ax.set_xticks([])
             self.ax.set_yticks([])
             self.canvas.draw()
