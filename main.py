@@ -1,5 +1,5 @@
 
-from interface import SortingAppWithSeaborn
+from interface.interface_dark import SortingAppWithSeaborn
 import customtkinter as ctk
 
 if __name__ == "__main__":
