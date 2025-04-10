@@ -52,7 +52,7 @@ class SortingAppWithSeaborn:
         self.title_label = ctk.CTkLabel(self.root, text="Visualisation de Tri", font=("Consolas", 26, "bold"))
         self.title_label.pack(pady=10)
 
-        self.slider = ctk.CTkSlider(self.root, from_=10, to=300, number_of_steps=290, command=self._update_slider_label)
+        self.slider = ctk.CTkSlider(self.root, from_=10, to=500, number_of_steps=490, command=self._update_slider_label)
         self.slider.set(50)
         self.slider.pack()
         self.slider_label = ctk.CTkLabel(self.root, text="Taille de la liste : 50")
@@ -124,7 +124,10 @@ class SortingAppWithSeaborn:
             self.ax.set_xticks([])
             self.ax.set_yticks([])
             self.canvas.draw()
-            self.root.update()
+            try:
+                self.root.update()
+            except:
+             pass
 
         if isinstance(algorithm, QuickSort):
             self._quick_sort_anim(data, update_plot)
@@ -155,12 +158,15 @@ class SortingAppWithSeaborn:
             else:
                 palette.append("#00FFFF")  # couleur de base
 
-        sns.barplot(x=list(range(len(arr))), y=arr, ax=self.ax, palette=palette)
+        sns.barplot(x=list(range(len(arr))), y=arr, hue=list(range(len(arr))), ax=self.ax, palette=palette, dodge=False, legend=False)
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         self.ax.set_title("Tri à bulles - Animation optimisée", fontsize=14)
         self.canvas.draw()
-        self.root.update()
+        try:
+            self.root.update()
+        except:
+            pass
         time.sleep(self.animation_speed)
 
     def draw_step(self, arr, highlights=None):
@@ -175,11 +181,14 @@ class SortingAppWithSeaborn:
                 palette.append("#00FFFF")  # cyan par défaut
 
         self.ax.clear()
-        sns.barplot(x=list(range(len(arr))), y=arr, ax=self.ax, palette=palette)
+        sns.barplot(x=list(range(len(arr))), y=arr, hue=list(range(len(arr))), ax=self.ax, palette=palette, dodge=False, legend=False)
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         self.canvas.draw()
-        self.root.update()
+        try:
+            self.root.update()
+        except:
+            pass
         time.sleep(self.animation_speed)
 
     def _quick_sort_anim(self, arr, draw_callback):
